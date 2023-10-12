@@ -1,0 +1,14 @@
+{
+  "name": "qvis",
+  "version": "1.0.0",
+  "description": "A website for visualizing experiments and concepts in Quantum Physics",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "imports": {
+    "mathjs": "https://cdn.skypack.dev/mathjs"
+  },
+  "author": "Priyansh Parakh",
+  "license": "ISC"
+}
