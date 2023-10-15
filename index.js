@@ -9,16 +9,16 @@ function updateValue(e) {
     parseStateInputToRenderPlot(e.target.value);
 }
 
-function parseStateInputToRenderLatex(i) {
-    console.log("parsing input to render latex - " + i)
-    if (!i){
-        return "";
-    }
-    i = i.replaceAll(">", "\\rangle");
-    i = i.replaceAll("<", "\\langle");
-    i = "$" + i + "$";
-    return i
-}
+// function parseStateInputToRenderLatex(i) {
+//     console.log("parsing input to render latex - " + i)
+//     if (!i){
+//         return "";
+//     }
+//     i = i.replaceAll(">", "\\rangle");
+//     i = i.replaceAll("<", "\\langle");
+//     i = "$" + i + "$";
+//     return i
+// }
 
 
 function parseStateInputToRenderPlot(i) {

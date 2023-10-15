@@ -25,7 +25,7 @@ const ORIGIN_COORD = [WIDTH/2, HEIGHT/2]
 const YAXIS_COORD = [ORIGIN_COORD[0], ORIGIN_COORD[1]-(YAXIS_RANGE[0]-YAXIS_RANGE[1])/2];
 const XAXIS_COORD = [ORIGIN_COORD[0]-(XAXIS_RANGE[1]-XAXIS_RANGE[0])/2, ORIGIN_COORD[1]];
 
-var svg = d3.select("#graph_section")
+var svg = d3.select("#graphSection")
                 .append("svg")
                 .attr("height", HEIGHT)
                 .attr("width", WIDTH)
