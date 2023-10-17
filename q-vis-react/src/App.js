@@ -10,7 +10,6 @@ export default function App() {
       <div>
         <h1 className='text-center text-3xl font-bold m-8'>Visualizing the States of a Quantum Harmonic Oscillator</h1>
         <StateInputGrid />
-        
       </div>
     )
 };
