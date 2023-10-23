@@ -9,9 +9,19 @@ import React, { Component } from 'react';
 
 
 class StateInputNumber extends Component {
-    
+  constructor(props) {
+    super(props);
+    this.state = {"number": ""}
+  }
     render() {
-      return <input className="mx-2 my-0.5 rounded border-2 border-black"type="text" />;
+      return <input className="mx-2 my-0.5 rounded border-2 border-black"type="text" onChange={evt => this.updateInputValue(evt)}/>;
+    }
+    updateInputValue(evt) {
+      const newValue = evt.target.value;
+      this.setState({
+        "number":newValue
+      })
+      this.props.coeffCallback(newValue);
     }
 }
 
@@ -62,20 +72,45 @@ class StateInputRow extends Component {
 
     constructor(props) {
       super(props);
-      this.state = {"number":"", coeff:"", slider:"0"}
+      this.state = {number:"", coef:"", slider:"0"};
     }
-    getSliderData(sliderValue) {
+    getNumberData = (numberValue) => {
+      console.log("parent received data from Number " + numberValue);
+      this.setState({
+        number : numberValue
+      }, this.props.getNumber(numberValue))
+    }
+    getSliderData = (sliderValue) => {
       console.log("parent received data from slider " + sliderValue);
     }
 
-    getCoeffData(coeffValue) {
+    getCoeffData = (coeffValue) => {
       console.log("parent received data from coeff " + coeffValue);
+      this.setState({
+        coef : coeffValue
+      }, this.props.getCoef(coeffValue))
     }
+    
+    updateInputNumber = (event) => {
+      const newValue = event.target.value;
+      this.setState({
+          'number' : newValue
+        })
+      this.props.stateCallback(this.state);
+    };
+    updateInputCoef = (event) => {
+      const newValue = event.target.value;
+      this.setState({
+          'coeff' : newValue
+        })
+      console.log('Updated Coef')
+      this.props.stateCallback(this.state);
+    };
     render() {
       return <div className="flex flex-row">
-        <StateInputNumber />
-        <StateInputCoeff coeffCallback={this.getCoeffData }/>
-        <StateInputSlider sliderCallback={this.getSliderData}/>
+        <StateInputNumber coeffCallback={this.getNumberData}/>
+        <StateInputCoeff coeffCallback={this.getCoeffData} />
+        <StateInputSlider sliderCallback={this.getSliderData} />
       </div>
     }
 }
