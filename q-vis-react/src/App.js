@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import StateInputGrid from './stateInputComponents/StateInputGrid';
 import StateInputAddButton from './stateInputComponents/StateInputAddButton';
+import GraphSVG from './graphingComponents/GraphSVG';
 
 
 export default function App() {
@@ -10,6 +11,7 @@ export default function App() {
       <div>
         <h1 className='text-center text-3xl font-bold m-8'>Visualizing the States of a Quantum Harmonic Oscillator</h1>
         <StateInputGrid />
+        <GraphSVG />
       </div>
     )
 };
