@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+  //Parakh: Switching off React Strict Mode to stop double mounting of components
   // <React.StrictMode>
     <App />
   // </React.StrictMode>
