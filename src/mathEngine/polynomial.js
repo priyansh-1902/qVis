@@ -6,7 +6,6 @@ function polynomial(coeffs, domain, resolution) {
     for (var [exp, coeff] of Object.entries(coeffs)){
         y = add(y, dotMultiply(coeff, dotPow(x, exp)));
     }
-    // return x.subset(index(range(0, resolution), 1), y)
     return [x, y]
 }
 

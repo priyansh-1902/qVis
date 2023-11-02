@@ -1,14 +1,15 @@
 import * as d3 from 'd3';
 import polynomial from '../mathEngine/polynomial';
+import hermitePolynomial from '../mathEngine/hermitePolynomial';
 import { range, subset, index } from 'mathjs';
 
 const HEIGHT = 500;
 const WIDTH = 800;
 
-const XMIN = -20;
-const XMAX = 20;
-const YMIN = -1;
-const YMAX = 1;
+const XMIN = -2;
+const XMAX = 2;
+const YMIN = -50;
+const YMAX = 50;
 
 const XAXIS_DOMAIN = [XMIN, XMAX];
 const YAXIS_DOMAIN = [YMIN, YMAX];
@@ -21,9 +22,9 @@ const ORIGIN_COORD = [WIDTH/2, HEIGHT/2]
 const YAXIS_COORD = [ORIGIN_COORD[0], ORIGIN_COORD[1]-(YAXIS_RANGE[0]-YAXIS_RANGE[1])/2];
 const XAXIS_COORD = [ORIGIN_COORD[0]-(XAXIS_RANGE[1]-XAXIS_RANGE[0])/2, ORIGIN_COORD[1]];
 
-const RESOLUTION = 100;
+const RESOLUTION = 10000;
 
-var coeffs = {0: 0.5}; //0.0001*x^3 + 0.05*x^2 
+var coeffs = {4:1}; //0.0001*x^3 + 0.05*x^2
 
 function GraphInit(el, state) {
     
@@ -61,7 +62,8 @@ function GraphInit(el, state) {
        .call(d3.axisLeft(yScale));
 
     const domain = [XMIN, XMAX];
-    var [x, y] = polynomial(coeffs, domain, RESOLUTION);
+
+    var [x, y] = hermitePolynomial(coeffs, domain, RESOLUTION);
     
     const points = svg.append('g');
 

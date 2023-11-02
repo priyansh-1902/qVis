@@ -1,0 +1,1 @@
+Hermite Polynomial Recurrence Relation - $H_3$
