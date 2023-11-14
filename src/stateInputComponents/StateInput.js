@@ -6,23 +6,14 @@ import StateInputAddButton from './StateInputAddButton';
 class StateInput extends Component{
     constructor(props) {
         super(props);
-        this.state = {
-            numRows : 1
-        }
-      }
-    //   getInputRows = this.state.numRows
-      incrementInputRows = () => {
-        this.setState(
-            {numRows : this.state.numRows + 1}
-        )
-      }
-      render() {
+    }
+
+    render() {
         return <div>
-            <StateInputGrid numRows={this.state.numRows}/>
-            <StateInputAddButton onClickFunc={this.incrementInputRows}/>
-        </div>
-        
-      }
+            <StateInputGrid />
+            <StateInputAddButton />
+        </div> 
+    }
 }
 
 export default StateInput;

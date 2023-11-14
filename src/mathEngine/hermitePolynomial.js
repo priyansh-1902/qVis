@@ -23,7 +23,7 @@ function H(n, x) {
         var y = add(firstTerm, secondTerm);
     }
 
-    return y
+    return y;
 }
 
 export default hermitePolynomial

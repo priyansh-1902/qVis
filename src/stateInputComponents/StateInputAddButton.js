@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from "react-redux";
+import { addTerm } from '../redux/stateInputSlice';
 
 class StateInputAddButton extends Component {
   constructor(props) {
@@ -6,10 +8,14 @@ class StateInputAddButton extends Component {
   }
     render() {
       return <div className='flex flex-row justify-center'>
-        <button onClick={this.props.onClickFunc} className="border-2 border-black m-5 px-5"> Add Harmonic </button>
+        <button className="border-2 border-black m-5 px-5" onClick={this.props.addRow}> Add Harmonic </button>
         </div>
     }
   }
 
-
-  export default StateInputAddButton;
+const mapDispatchToProps = dispatch => {
+    return {
+        addRow: () => {dispatch(addTerm())}
+    }
+}
+export default connect(() => {return {}}, mapDispatchToProps)(StateInputAddButton);

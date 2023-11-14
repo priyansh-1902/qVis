@@ -1,116 +1,74 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { updateHarmonic, updateCoeff } from '../redux/stateInputSlice';
+import { dispatch } from 'd3';
 
-// good post to help understand some stuff related to react event listeners - 
-// https://stackoverflow.com/questions/36683770/how-to-get-the-value-of-an-input-field-using-reactjs
-
-
-// good post to understand passing data between elements - 
-// https://medium.com/@jasminegump/passing-data-between-a-parent-and-child-in-react-deea2ec8e654
-
-
-class StateInputNumber extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {"number": ""}
-  }
-    render() {
-      return <input className="mx-2 my-0.5 rounded border-2 border-black"type="text" onChange={evt => this.updateInputValue(evt)}/>;
-    }
-    updateInputValue(evt) {
-      const newValue = evt.target.value;
-      this.setState({
-        "number":newValue
-      })
-      this.props.coeffCallback(newValue);
-    }
-}
-
-class StateInputCoeff extends Component {
+class _HarmonicInput extends Component {
     constructor(props) {
       super(props);
-      this.state = {"value": ""}
+      console.log(props)
     }
-
     render() {
-      return <input className="mx-2 my-0.5 rounded border-2 border-black" type="text" 
-              value={this.state['value']}
-              onChange={evt => this.updateInputValue(evt)}/>;
-    }
-
-    updateInputValue(evt) {
-      const newValue = evt.target.value;
-      this.setState({
-        "value":newValue
-      })
-      this.props.coeffCallback(newValue);
+        return <input value={this.props.value[this.props.name].harmonic} onChange={(evt) => this.props.updateHarmonic(this.props.name, evt.target.value)}
+                className="mx-2 my-0.5 rounded border-2 border-black" type="text" />;
     }
 }
 
-class StateInputSlider extends Component {
+class _CoeffInput extends Component {
     constructor(props) {
       super(props);
-      this.state = { 'value' :"0" };
     }
 
     render() {
-      return <input type="range" min="0" max="1000000" 
-                value={this.state['value']} 
-                className="mx-4" 
-                onChange={evt => this.updateInputValue(evt)}/>;
-    }
-
-    updateInputValue(evt) {
-      const newValue = evt.target.value;
-      this.setState({
-        'value':newValue.toString()
-      })
-      this.props.sliderCallback(newValue);
+      return <input value={this.props.value[this.props.name].coeff} onChange={(evt) => this.props.updateCoeff(this.props.name, evt.target.value)}
+             className="mx-2 my-0.5 rounded border-2 border-black" type="text"/>
     }
 }
+
+
+class _SliderInput extends Component {
+    constructor(props) {
+      super(props);
+    }
+
+    render() { 
+      return <input type="range" value={this.props.value[this.props.name].coeff*1000000} onChange={(evt) => this.props.updateCoeff(this.props.name, evt.target.value/1000000)}
+      min="0" max="1000000" className="mx-4"/>;
+    }
+}
+
+const mapStateToProps = state => {
+    return {
+        value: state.stateInput.terms
+    }
+}
+
+const mapDispatchToHarmonicProps = dispatch => {
+    return {
+        updateHarmonic: (row, value) => {dispatch(updateHarmonic({row:row, value:value}))}
+    }
+}
+
+const mapDispatchToCoeffProps = dispatch => {
+    return {
+        updateCoeff: (row, value) => {dispatch(updateCoeff({row:row, value:value}))}
+    }
+}
+
+
+const HarmonicInput = connect(mapStateToProps, mapDispatchToHarmonicProps)(_HarmonicInput);
+const CoeffInput = connect(mapStateToProps, mapDispatchToCoeffProps)(_CoeffInput);
+const SliderInput = connect(mapStateToProps, mapDispatchToCoeffProps)(_SliderInput);
 
 class StateInputRow extends Component {
-
     constructor(props) {
       super(props);
-      this.state = {number:"", coef:"", slider:"0"};
     }
-    getNumberData = (numberValue) => {
-      console.log("parent received data from Number " + numberValue);
-      this.setState({
-        number : numberValue
-      }, this.props.getNumber(numberValue))
-    }
-    getSliderData = (sliderValue) => {
-      console.log("parent received data from slider " + sliderValue);
-    }
-
-    getCoeffData = (coeffValue) => {
-      console.log("parent received data from coeff " + coeffValue);
-      this.setState({
-        coef : coeffValue
-      }, this.props.getCoef(coeffValue))
-    }
-    
-    updateInputNumber = (event) => {
-      const newValue = event.target.value;
-      this.setState({
-          'number' : newValue
-        })
-      this.props.stateCallback(this.state);
-    };
-    updateInputCoef = (event) => {
-      const newValue = event.target.value;
-      this.setState({
-          'coeff' : newValue
-        })
-      console.log('Updated Coef')
-      this.props.stateCallback(this.state);
-    };
     render() {
       return <div className="flex flex-row">
-        <StateInputNumber coeffCallback={this.getNumberData}/>
-        <StateInputCoeff coeffCallback={this.getCoeffData} />
-        <StateInputSlider sliderCallback={this.getSliderData} />
+        <HarmonicInput name={this.props.name}/>
+        <CoeffInput name={this.props.name}/>
+        <SliderInput name={this.props.name}/>
       </div>
     }
 }
