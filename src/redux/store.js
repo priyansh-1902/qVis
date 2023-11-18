@@ -10,5 +10,5 @@ export default configureStore({
         stateInput: stateInputReducer
     },
     // parakh: uncomment the line below to enable state logger
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger)
+    // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger)
 })

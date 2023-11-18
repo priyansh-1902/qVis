@@ -7,9 +7,9 @@ export const stateInputSlice = createSlice({
         terms: {}
     }, 
     reducers: {
-        addTerm: state => {
+        addTerm: (state, action) => {
             state.numTerms += 1
-            state.terms["term" + (state.numTerms)] = {harmonic: "", coeff: ""}
+            state.terms["term" + (state.numTerms)] = {harmonic: action.payload.harmonic, coeff: action.payload.coeff}
         },
 
         updateHarmonic: (state, action) => {

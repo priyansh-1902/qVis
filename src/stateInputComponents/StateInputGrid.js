@@ -10,7 +10,7 @@ class StateInputGrid extends Component {
     
     //When the grid get initalized, we remove all terms and add a new one
     this.props.clearTerms();
-    this.props.addTerm();
+    this.props.addTerm(1, 1);
 
     this.rows = [<StateInputRow key={0} name={'term1'}/>]
   }
@@ -36,7 +36,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         clearTerms: () => dispatch(clearTerms()),
-        addTerm: () => dispatch(addTerm())
+        addTerm: (harmonic, value) => dispatch(addTerm({harmonic: 1, coeff: 1}))
     }
 }
 

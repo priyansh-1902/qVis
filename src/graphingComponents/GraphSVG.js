@@ -2,22 +2,30 @@
 // https://gist.github.com/alexcjohnson/a4b714eee8afd2123ee00cb5b3278a5f
 
 import React, { Component } from 'react';
-import GraphInit from './GraphD3Functions';
+import { GraphInit, GraphRender } from './GraphD3Functions';
+
+import { connect } from 'react-redux';
 
 class GraphSVG extends Component {
     constructor(props) {
         super(props);
-        this.state = { };
+        this.state = {};
     }
 
     componentDidMount() {
-        GraphInit(this.el, this.state);
+        GraphInit();
+        GraphRender(this.props.wavefunction);
     }
 
     render() {
-        return (<div className="mx-auto flex self-center place-items-center" ref={el => this.el = el} />);
+        GraphRender(this.props.wavefunction);
+        return (<div className="mx-auto flex self-center place-items-center" id="GRAPH_SVG" />);
     }
 }
 
-
-export default GraphSVG;
+const mapStateToProps = state => {
+    return {
+        wavefunction: state.stateInput.terms
+    }
+}
+export default connect(mapStateToProps, () => {return {}})(GraphSVG);

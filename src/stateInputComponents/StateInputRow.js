@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { updateHarmonic, updateCoeff } from '../redux/stateInputSlice';
-import { dispatch } from 'd3';
 
 class _HarmonicInput extends Component {
     constructor(props) {
       super(props);
-      console.log(props)
     }
     render() {
         return <input value={this.props.value[this.props.name].harmonic} onChange={(evt) => this.props.updateHarmonic(this.props.name, evt.target.value)}
