@@ -1,6 +1,4 @@
 import * as d3 from 'd3';
-import polynomial from '../mathEngine/polynomial';
-import hermitePolynomial from '../mathEngine/hermitePolynomial';
 import { range, subset, index } from 'mathjs';
 
 const GRAPH_SVG_ID = "GRAPH_SVG_ID";
@@ -8,10 +6,10 @@ const GRAPH_SVG_ID = "GRAPH_SVG_ID";
 const HEIGHT = 500;
 const WIDTH = 800;
 
-const XMIN = -2;
-const XMAX = 2;
-const YMIN = -30;
-const YMAX = 30;
+const XMIN = -20;
+const XMAX = 20;
+const YMIN = -1;
+const YMAX = 1;
 
 const XAXIS_DOMAIN = [XMIN, XMAX];
 const YAXIS_DOMAIN = [YMIN, YMAX];
@@ -72,7 +70,6 @@ function parseWaveFunction(wavefunction) {
    for (const term in wavefunction) {
       var harmonic = parseInt(wavefunction[term]['harmonic']);
       var coeff = parseFloat(wavefunction[term]['coeff']);
-      
       if ((harmonic) && (coeff)) {
          if (!(harmonic in coeffs)) {
             coeffs[harmonic] = coeff;
@@ -85,16 +82,23 @@ function parseWaveFunction(wavefunction) {
    return coeffs
 }
 
-function GraphRender(wavefunction){
+async function GraphRender(wavefunction){
    const svg = d3.select("#GRAPH_SVG").select("svg");
    const domain = [XMIN, XMAX];
 
    var coeffs = parseWaveFunction(wavefunction);
-   var [x, y] = hermitePolynomial(coeffs,domain, RESOLUTION);
+   const JSONString = JSON.stringify({coeffs: coeffs, domain: domain, resolution: RESOLUTION});
+   const [x, y] = await fetch("./state", {method:"POST",
+                     headers: {
+                        "content-type": "application/json"
+                     },
+                     body: JSONString
+                     }).then(response => response.json()).then((res) => {return [JSON.parse(res.x), JSON.parse(res.y)]});
+   
 
    var line = d3.line()
-      .x(function(d) { return xScale(subset(x, index(d.value))); }) 
-      .y(function(d) { return yScale(subset(y, index(d.value))); }) 
+      .x(function(d) { return xScale(x[d.value]); }) 
+      .y(function(d) { return yScale(y[d.value]); }) 
       .curve(d3.curveMonotoneX)
 
    svg.select('#plot').remove();
