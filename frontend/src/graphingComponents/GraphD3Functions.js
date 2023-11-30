@@ -6,8 +6,8 @@ const GRAPH_SVG_ID = "GRAPH_SVG_ID";
 const HEIGHT = 500;
 const WIDTH = 800;
 
-const XMIN = -20;
-const XMAX = 20;
+const XMIN = -10;
+const XMAX = 10;
 const YMIN = -1;
 const YMAX = 1;
 
@@ -22,7 +22,8 @@ const ORIGIN_COORD = [WIDTH/2, HEIGHT/2]
 const YAXIS_COORD = [ORIGIN_COORD[0], ORIGIN_COORD[1]-(YAXIS_RANGE[0]-YAXIS_RANGE[1])/2];
 const XAXIS_COORD = [ORIGIN_COORD[0]-(XAXIS_RANGE[1]-XAXIS_RANGE[0])/2, ORIGIN_COORD[1]];
 
-const RESOLUTION = 10000;
+const RESOLUTION = 1000;
+var computed_states = {};
 
 //some globals 
 var xScale, yScale;
@@ -82,19 +83,47 @@ function parseWaveFunction(wavefunction) {
    return coeffs
 }
 
+function computeWaveFunction(coeffs){
+   var y = new Array(RESOLUTION).fill(0);
+
+   for (const harmonic in coeffs)
+   {
+      for (var i = 0; i < y.length-1; i++)
+      {
+         y[i] += coeffs[harmonic]*computed_states[harmonic][i];
+      }
+   }
+
+   return [computed_states['x'], y];
+}
+
+
 async function GraphRender(wavefunction){
    const svg = d3.select("#GRAPH_SVG").select("svg");
    const domain = [XMIN, XMAX];
 
    var coeffs = parseWaveFunction(wavefunction);
-   const JSONString = JSON.stringify({coeffs: coeffs, domain: domain, resolution: RESOLUTION});
-   const [x, y] = await fetch("./state", {method:"POST",
-                     headers: {
-                        "content-type": "application/json"
-                     },
-                     body: JSONString
-                     }).then(response => response.json()).then((res) => {return [JSON.parse(res.x), JSON.parse(res.y)]});
    
+   for (const harmonic in coeffs)
+   {
+      if (!(harmonic in computed_states))
+      {
+         console.log("asking backend for state", harmonic);
+         const JSONString = JSON.stringify({harmonic: harmonic, domain: domain, resolution: RESOLUTION});
+         const [x, y] = await fetch("./state", {method:"POST",
+                        headers: {
+                           "content-type": "application/json"
+                        },
+                        body: JSONString
+                        }).then(response => response.json()).then((res) => {return [JSON.parse(res.x), JSON.parse(res.y)]});
+         
+         computed_states[harmonic] = y;
+         computed_states['x'] = x;
+      }
+   }
+
+   const [x, y] = computeWaveFunction(coeffs);
+   // console.log(y);
 
    var line = d3.line()
       .x(function(d) { return xScale(x[d.value]); }) 

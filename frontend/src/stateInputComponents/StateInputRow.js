@@ -30,8 +30,8 @@ class _SliderInput extends Component {
     }
 
     render() { 
-      return <input type="range" value={this.props.value[this.props.name].coeff*1000000} onChange={(evt) => this.props.updateCoeff(this.props.name, evt.target.value/1000000)}
-      min="0" max="1000000" className="mx-4"/>;
+      return <input type="range" value={this.props.value[this.props.name].coeff*1000} onChange={(evt) => this.props.updateCoeff(this.props.name, evt.target.value/1000)}
+      min="0" max="1000" className="mx-4"/>;
     }
 }
 
