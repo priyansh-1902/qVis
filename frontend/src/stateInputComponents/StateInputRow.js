@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { updateHarmonic, updateCoeff } from '../redux/stateInputSlice';
+import IconButton from '@mui/material/IconButton';
+import CancelIcon from '@mui/icons-material/Cancel';
+import Slider from '@mui/material/Slider';
+import Box from '@mui/material/Box';
 
 class _HarmonicInput extends Component {
     constructor(props) {
@@ -30,9 +34,34 @@ class _SliderInput extends Component {
     }
 
     render() { 
-      return <input type="range" value={this.props.value[this.props.name].coeff*1000} onChange={(evt) => this.props.updateCoeff(this.props.name, evt.target.value/1000)}
-      min="0" max="1000" className="mx-4"/>;
+      return <Box sx={{ width: 150 }}>
+                <Slider
+                  min={0} max={1} step={0.001}
+                  defaultValue={1}
+                  value={this.props.value[this.props.name].coeff}
+                  onChange={(evt) => this.props.updateCoeff(this.props.name, evt.target.value)}
+                  size="small"
+                  aria-label="_sliderInput"
+                  valueLabelDisplay="auto"
+                  />
+              </Box>
     }
+}
+
+class _removeStateRowIcon extends Component {
+  constructor(props){
+    super(props);
+  }
+
+  render() {
+    return (
+      <div>
+        <IconButton size="small" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
+            <CancelIcon />
+          </IconButton>
+      </div>
+    )
+  }
 }
 
 const mapStateToProps = state => {
@@ -64,6 +93,7 @@ class StateInputRow extends Component {
     }
     render() {
       return <div className="flex flex-row">
+         <_removeStateRowIcon/>
         <HarmonicInput name={this.props.name}/>
         <CoeffInput name={this.props.name}/>
         <SliderInput name={this.props.name}/>

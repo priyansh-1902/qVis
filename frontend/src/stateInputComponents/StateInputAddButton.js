@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { addTerm } from '../redux/stateInputSlice';
 
+import Button from '@mui/material/Button';
+
 class StateInputAddButton extends Component {
   constructor(props) {
     super(props);
   }
     render() {
-      return <div className='flex flex-row justify-center'>
-        <button className="border-2 border-black m-5 px-5" onClick={() => {this.props.addRow('', '')}}> Add Harmonic </button>
+      return <div className='flex flex-row justify-center my-2'>
+        <Button variant="contained" onClick={() => {this.props.addRow('', '')}}> Add Harmonic </Button>
         </div>
     }
   }
