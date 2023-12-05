@@ -1,3 +1,4 @@
 #!/bin/bash
-
-open -a Terminal $cwd
+python backend/server.py/ &
+cd frontend
+npm run start
