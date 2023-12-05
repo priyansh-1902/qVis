@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
-import { range, subset, index } from 'mathjs';
+import { range } from 'mathjs';
+import stateInputStore from '../redux/store';
 
 const GRAPH_SVG_ID = "GRAPH_SVG_ID";
 
@@ -24,13 +25,17 @@ const XAXIS_COORD = [ORIGIN_COORD[0]-(XAXIS_RANGE[1]-XAXIS_RANGE[0])/2, ORIGIN_C
 
 const RESOLUTION = 1000;
 var computed_states = {};
+var current_plots = {"psi": {display:true, color: "red"},
+                     "psi_squared": {display: false, color: "blue"}}
 
 //some globals 
 var xScale, yScale;
 
 function GraphInit() {
    
-   const svg = d3.select("#GRAPH_SVG").append('svg');
+   const svg = d3.select("#GRAPH_SVG")
+                  .append('svg');
+
    svg.classed("mx-auto", true)
       .attr("height", HEIGHT)
       .attr("width", WIDTH);
@@ -51,6 +56,37 @@ function GraphInit() {
       .style('font-family', 'Helvetica')
       .style('font-size', 20)
       .text('Wavefunction');
+
+// Legend
+
+   svg.append('text')
+      .attr('x', TITLE_COORD[0] + 350)
+      .attr('y', TITLE_COORD[1])
+      .attr('text-anchor', 'middle')
+      .style('font-family', 'Helvetica')
+      .style('font-size', 20)
+      .text('psi')
+      .style("cursor", "pointer")
+      .on("click", () => {
+                           current_plots["psi"]["display"] = !current_plots["psi"]["display"];
+                           GraphRender();
+                        }
+         );
+
+   svg.append('text')
+      .attr('x', TITLE_COORD[0] + 350)
+      .attr('y', TITLE_COORD[1] + 30)
+      .attr('text-anchor', 'middle')
+      .style('font-family', 'Helvetica')
+      .style('font-size', 20)
+      .text('psi^2')
+      .style("cursor", "pointer")
+      .on("click", () => {
+                           current_plots["psi_squared"]["display"] = !current_plots["psi_squared"]["display"];
+                           GraphRender();
+                        }
+         );
+      
 
    // X AXIS
    svg.append("g")
@@ -83,14 +119,14 @@ function parseWaveFunction(wavefunction) {
    return coeffs
 }
 
-function computeWaveFunction(coeffs){
+function computePlot(coeffs, variable){
    var y = new Array(RESOLUTION).fill(0);
 
    for (const harmonic in coeffs)
    {
       for (var i = 0; i < y.length-1; i++)
       {
-         y[i] += coeffs[harmonic]*computed_states[harmonic][i];
+         y[i] += coeffs[harmonic]*computed_states[harmonic][variable][i];
       }
    }
 
@@ -98,9 +134,11 @@ function computeWaveFunction(coeffs){
 }
 
 
-async function GraphRender(wavefunction){
+async function GraphRender(){
    const svg = d3.select("#GRAPH_SVG").select("svg");
    const domain = [XMIN, XMAX];
+
+   const wavefunction = stateInputStore.getState().stateInput.terms
 
    var coeffs = parseWaveFunction(wavefunction);
    
@@ -110,37 +148,41 @@ async function GraphRender(wavefunction){
       {
          console.log("asking backend for state", harmonic);
          const JSONString = JSON.stringify({harmonic: harmonic, domain: domain, resolution: RESOLUTION});
-         const [x, y] = await fetch("./state", {method:"POST",
+         const [x, psi, psi_squared] = await fetch("./state", {method:"POST",
                         headers: {
                            "content-type": "application/json"
                         },
                         body: JSONString
-                        }).then(response => response.json()).then((res) => {return [JSON.parse(res.x), JSON.parse(res.y)]});
+                        }).then(response => response.json()).then((res) => {return [JSON.parse(res.x), JSON.parse(res.psi), JSON.parse(res.psi_squared)]});
          
-         computed_states[harmonic] = y;
+         computed_states[harmonic] = {};
+         computed_states[harmonic]["psi"] = psi;
+         computed_states[harmonic]["psi_squared"] = psi_squared;
          computed_states['x'] = x;
       }
    }
+   for (const variable in current_plots){
+      svg.select('#plot' + variable).remove();
+      if (current_plots[variable]["display"] == true){
+         const [x, y] = computePlot(coeffs, variable);
+         // console.log(y);
 
-   const [x, y] = computeWaveFunction(coeffs);
-   // console.log(y);
-
-   var line = d3.line()
-      .x(function(d) { return xScale(x[d.value]); }) 
-      .y(function(d) { return yScale(y[d.value]); }) 
-      .curve(d3.curveMonotoneX)
-
-   svg.select('#plot').remove();
-   
-   svg.append("path")
-      .attr("id", "plot")
-      .datum(range(0, RESOLUTION, 1)) 
-      .attr("class", "line") 
-      .attr("transform", "translate(" + XAXIS_COORD[0] + "," + YAXIS_COORD[1] + ")")
-      .attr("d", line)
-      .style("fill", "none")
-      .style("stroke", "#CC0000")
-      .style("stroke-width", "2");
+         var line = d3.line()
+            .x(function(d) { return xScale(x[d.value]); }) 
+            .y(function(d) { return yScale(y[d.value]); }) 
+            .curve(d3.curveMonotoneX)
+         
+         svg.append("path")
+            .attr("id", "plot" + variable)
+            .datum(range(0, RESOLUTION, 1)) 
+            .attr("class", "line") 
+            .attr("transform", "translate(" + XAXIS_COORD[0] + "," + YAXIS_COORD[1] + ")")
+            .attr("d", line)
+            .style("fill", "none")
+            .style("stroke", current_plots[variable]['color'])
+            .style("stroke-width", "2");
+      }
+   }
 
 }
 export { GraphInit, GraphRender };

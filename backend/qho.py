@@ -28,6 +28,8 @@ class WaveFunction:
         for i in _coeffs:
             self.psi+= _coeffs[i]*qho_n(i, self.x, m, h_bar, omega)
 
+        self.psi_squared = np.square(self.psi)
+
     def normalize(self, coeffs):
         if isinstance(coeffs, list):
             s = np.sum(np.square(np.array(coeffs)))

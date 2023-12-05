@@ -18,7 +18,7 @@ class GraphSVG extends Component {
     }
 
     render() {
-        GraphRender(this.props.wavefunction);
+        GraphRender();
         return (<div className="mx-auto flex self-center place-items-center" id="GRAPH_SVG" />);
     }
 }

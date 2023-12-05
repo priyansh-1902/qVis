@@ -24,6 +24,8 @@ export const stateInputSlice = createSlice({
             state.numTerms = 0
             state.terms = {}
         }
+
+        
     }
 })
 

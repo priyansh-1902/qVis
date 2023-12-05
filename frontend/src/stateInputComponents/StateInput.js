@@ -16,7 +16,6 @@ class StateInput extends Component{
         return <div>
             <StateInputGrid />
             <StateInputAddButton />
-            {/* <StateDisplayLaTeX /> */}
         </div> 
     }
 }
