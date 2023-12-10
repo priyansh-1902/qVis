@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { addTerm } from '../redux/stateInputSlice';
-import { createRef } from 'react';
-import Box from '@mui/material/Box';
+import { InlineMath, BlockMath } from 'react-katex';
+import 'katex/dist/katex.min.css'; // Import Katex CSS
 
-var Latex = require('react-latex')
 
-function stateToLatexString(){
-    return '$e^{1}$'
+function stateToLatexString(state){
+    const terms = Object.entries(state);
+    return terms.map(([key, value])=> value.coeff + '\\ket{' + value.harmonic + '}').join('+')
+    
 }
 
 
@@ -15,14 +15,12 @@ class _stateDisplayLaTeX extends Component {
   constructor(props) {
     super(props);
     this.LatexString = stateToLatexString(props.value);
-    this.ref = React.createRef();
   }
     
   render() {
-      return <div ref={this.ref} > 
-                <Latex output="mathml">
-                    $\\gamma$
-                </Latex> 
+    this.LatexString = stateToLatexString(this.props.value);
+      return <div > 
+                <BlockMath math={this.LatexString} />
             </div>
     }
   }
@@ -30,7 +28,7 @@ class _stateDisplayLaTeX extends Component {
   const mapStateToProps = state => {
     return {
         value: state.stateInput.terms
-    }
+  }
 }
 
 const StateDisplayLaTeX = connect(mapStateToProps, () => {return {}}) (_stateDisplayLaTeX);
