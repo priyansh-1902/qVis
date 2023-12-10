@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 import { range } from 'mathjs';
 import stateInputStore from '../redux/store';
+import { InlineMath } from 'react-katex'
 
 const GRAPH_SVG_ID = "GRAPH_SVG_ID";
 
@@ -59,33 +60,39 @@ function GraphInit() {
 
 // Legend
 
-   svg.append('text')
-      .attr('x', TITLE_COORD[0] + 350)
-      .attr('y', TITLE_COORD[1])
+   svg.append('svg:image')
+      .attr('x', TITLE_COORD[0] + 330)
+      .attr('y', TITLE_COORD[1]-30)
       .attr('text-anchor', 'middle')
+      .attr('width', 40)
+      .attr('height', 48)
       .style('font-family', 'Helvetica')
       .style('font-size', 20)
-      .text('psi')
       .style("cursor", "pointer")
+      .attr("xlink:href", require("./psi.png"))
       .on("click", () => {
                            current_plots["psi"]["display"] = !current_plots["psi"]["display"];
                            GraphRender();
                         }
-         );
+      );
 
-   svg.append('text')
-      .attr('x', TITLE_COORD[0] + 350)
-      .attr('y', TITLE_COORD[1] + 30)
+
+   svg.append('svg:image')
+      .attr('x', TITLE_COORD[0] + 330)
+      .attr('y', TITLE_COORD[1])
+      .attr('width', 60)
+      .attr('height', 72)
       .attr('text-anchor', 'middle')
       .style('font-family', 'Helvetica')
       .style('font-size', 20)
-      .text('psi^2')
       .style("cursor", "pointer")
+      .attr("xlink:href", require("./psi_squared.png"))
       .on("click", () => {
                            current_plots["psi_squared"]["display"] = !current_plots["psi_squared"]["display"];
                            GraphRender();
                         }
          );
+
       
 
    // X AXIS
@@ -165,7 +172,6 @@ async function GraphRender(){
       svg.select('#plot' + variable).remove();
       if (current_plots[variable]["display"] == true){
          const [x, y] = computePlot(coeffs, variable);
-         // console.log(y);
 
          var line = d3.line()
             .x(function(d) { return xScale(x[d.value]); }) 
